@@ -1,68 +1,68 @@
 <?php
+
+namespace Nobaan\Backend;
+
+use \PDO;
+
+
 class Database
 {
     private $pdo,
-            $query,
-            $error = false,
-            $results,
-            $count = 0;
+    $query,
+    $error = false,
+    $results;
 
 
-    private function __construct ()
+    public function __construct()
     {
         try {
-            $this->pdo = new PDO('mysql:host=localhost;dbname=nobaan_test', 'root', ''); 
+            $this->pdo = new PDO('mysql:host=localhost;dbname=nobaan_test', 'root', '');
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
     }
 
-    public function query($sql, array $params) 
+    public function query($sql, array $params)
     {
         $this->error = false;
-        if($this->query = $this->pdo->prepare($sql))
-        {
+
+        if ($this->query = $this->pdo->prepare($sql)) {
             $x = 1;
-            if(count($params))
-            {
-                foreach($params as $param)
-                {
+            if (count($params)) {
+                foreach ($params as $param) {
                     $this->query->bindValue($x, $param);
                     $x++;
                 }
             }
 
-            if($this->query->execute())
-            {
-                $this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
-                $this->count = $this->query->rowCount();
-            } else
-            {
-                $this->error = true;
+            if ($this->query->execute()) {
+                return $this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
             }
+            return false;
         }
+        return $this->error = $this->query->errorInfo();
     }
 
     public function action($action, $table, array $where)
     {
-        if(count($where) === 3)
-        {
+        if (count($where) === 3) {
             $operators = array('=', '>', '<', '>=', '<=');
             $field = $where[0];
             $operator = $where[1];
             $value = $where[2];
 
-            if(in_array($operator, $operators))
-            {
+            if (in_array($operator, $operators)) {
                 $sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
 
-                if(!$this->query($sql, array($value))->error())
-                {
-                    return $this;
+                if ($this->query($sql, array($value))) {
+                    return $this->query->fetchAll(PDO::FETCH_OBJ);
+                } else {
+                    return $this->query->errorInfo();
                 }
             }
         }
-        
         return false;
     }
 
@@ -78,29 +78,29 @@ class Database
 
     public function insert($table, array $fields)
     {
-        if(count($fields))
-        {
+        if (count($fields)) {
             $keys = array_keys($fields);
             $values = '';
             $x = 1;
 
-            foreach($fields as $field)
-            {
+            foreach ($fields as $field) {
                 $values .= '?';
 
-                if($x < count($fields))
-                {
+                if ($x < count($fields)) {
                     $values .= ', ';
                 }
 
                 $x++;
             }
 
-            $sql = "INSERT INTO {$table} (".implode(', ', $keys).") VALUES ({$values})";
+            $sql = "INSERT INTO {$table} (" . implode(', ', $keys) . ") VALUES ({$values})";
 
-            if(!$this->query($sql, $fields)->error())
+            if ($this->query($sql, $fields)) 
             {
                 return true;
+            } else
+            {
+                return $this->query->errorInfo();
             }
         }
 
@@ -109,43 +109,24 @@ class Database
 
     public function update($table, $id, $fields)
     {
-        $set    = '';
-        $x      = 1;
+        $set = '';
+        $x = 1;
 
-        foreach ($fields as $name => $value)
-        {
+        foreach ($fields as $name => $value) {
             $set .= "{$name} = ?";
 
-            if ($x < count($fields))
-            {
+            if ($x < count($fields)) {
                 $set .= ', ';
             }
 
             $x++;
         }
 
-        $sql = "UPDATE {$table} SET {$set} WHERE uid = {$id}";
+        $sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
 
-        if (!$this->query($sql, $fields)->error())
-        {
+        if ($this->query($sql, $fields)) {
             return true;
         }
-
-        return false;
-    }
-
-    public function results()
-    {
-        return $this->results;
-    }
-
-    public function first()
-    {
-        return $this->results()[0];
-    }
-
-    public function count()
-    {
-        return $this->count;
+        return $this->query->errorInfo();
     }
 }

@@ -6,4 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Nobaan\\DB\\' => array($baseDir . '/app/Backend'),
+    'Nobaan\\' => array($baseDir . '/app'),
 );

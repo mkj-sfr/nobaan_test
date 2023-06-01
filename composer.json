@@ -1,5 +1,8 @@
 {
     "autoload": {
-        "classmap": ["app/backend"]
+        "psr-4": {
+            "Nobaan\\":"app/",
+            "Nobaan\\Backend\\":"app//Backend/"
+        }
     }
 }

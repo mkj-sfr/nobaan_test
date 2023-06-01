@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Database' => $baseDir . '/app/backend/Database.php',
+    'Nobaan\\DB\\Database' => $baseDir . '/app/Backend/Database.php',
 );

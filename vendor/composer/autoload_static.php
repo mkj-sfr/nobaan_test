@@ -6,14 +6,35 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit3284562dd65225eea282a6034910efd0
 {
+    public static $prefixLengthsPsr4 = array (
+        'N' => 
+        array (
+            'Nobaan\\DB\\' => 10,
+            'Nobaan\\' => 7,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Nobaan\\DB\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/Backend',
+        ),
+        'Nobaan\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
+        ),
+    );
+
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Database' => __DIR__ . '/../..' . '/app/backend/Database.php',
+        'Nobaan\\DB\\Database' => __DIR__ . '/../..' . '/app/Backend/Database.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3284562dd65225eea282a6034910efd0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3284562dd65225eea282a6034910efd0::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit3284562dd65225eea282a6034910efd0::$classMap;
 
         }, null, ClassLoader::class);
