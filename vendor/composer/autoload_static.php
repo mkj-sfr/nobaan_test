@@ -9,13 +9,18 @@ class ComposerStaticInit3284562dd65225eea282a6034910efd0
     public static $prefixLengthsPsr4 = array (
         'N' => 
         array (
-            'Nobaan\\DB\\' => 10,
+            'Nobaan\\Backend\\Core\\' => 20,
+            'Nobaan\\Backend\\' => 15,
             'Nobaan\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Nobaan\\DB\\' => 
+        'Nobaan\\Backend\\Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/Backend/core',
+        ),
+        'Nobaan\\Backend\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app/Backend',
         ),
@@ -27,7 +32,7 @@ class ComposerStaticInit3284562dd65225eea282a6034910efd0
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Nobaan\\DB\\Database' => __DIR__ . '/../..' . '/app/Backend/Database.php',
+        'Nobaan\\Backend\\Core\\Database' => __DIR__ . '/../..' . '/app/Backend/core/Database.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

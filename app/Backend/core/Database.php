@@ -1,6 +1,6 @@
 <?php
 
-namespace Nobaan\Backend;
+namespace Nobaan\Backend\Core;
 
 use \PDO;
 

@@ -2,7 +2,8 @@
     "autoload": {
         "psr-4": {
             "Nobaan\\":"app/",
-            "Nobaan\\Backend\\":"app//Backend/"
+            "Nobaan\\Backend\\":"app//Backend/",
+            "Nobaan\\Backend\\Core\\":"app//Backend//core/"
         }
     }
 }
