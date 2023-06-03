@@ -32,10 +32,8 @@ $db = new Database;
 					</div>
 				</div>
 			</div>
-			<button id="sort_AZ">Name A-Z</button>
-			<button id="sort_ZA">Name Z-A</button>
-			<button>Price Ascending</button>
-			<button>Price Descending</button>
+			<button class="btn btn-secondary mb-3" id="price_asc">Price Ascending</button>
+			<button class="btn btn-secondary mb-3" id="price_des">Price Descending</button>
 			<div class="row" id="products_list"></div>
 		</div>
 	</section>
@@ -51,14 +49,12 @@ $db = new Database;
 			load_products();
 		})
 
-		document.getElementById('sort_AZ').addEventListener('click', () => {
-			let products = document.querySelectorAll('#product').innerHTML,
-				container = document.getElementById('products_list');
-			console.log(products);
-			// container.innerHTML = '';
-			// products.forEach((item, index)=> {
-			// 	container.innerHTML += item;
-			// });
+		document.getElementById('price_asc').addEventListener('click', () => {
+			load_products(['ascending'])
+		})
+
+		document.getElementById('price_des').addEventListener('click', () => {
+			load_products(['descending'])
 		})
 
 
@@ -79,13 +75,46 @@ $db = new Database;
 					filters: filters
 				},
 				success: function (data) {
-
+					data = JSON.parse(data)
+					// console.log(data);
 					if (data === 'false') {
 						document.getElementById('products_list').innerHTML = '<h6>No products were found.</h6>'
 						return
 					}
+					if (filters.length && filters[0] === 'ascending') {
+						let reserve = {},
+							sortable = [],
+							counter = 0;
+						data.forEach(product => {
+							if (product.product_discount) {
+								reserve[product.id] = product.product_price * (100 - product.product_discount) / 100;
+							} else {
+								reserve[product.id] = product.product_price;
+							}
+						});
+						for (var key in reserve) {
+							sortable.push([key, reserve[key]]);
+						}
+						sortable.sort(function (a, b) {
+							return a[1] - b[1];
+						});
+						sortable.forEach(element => {
+							data.forEach(product => {
+								if (element[0] == product.id){
+									const index = data.findIndex(object => {
+										return object.id == element[0];
+									});
+								var spliceditem = data.splice(index, 1)[0]
+								data.splice(counter, 0, spliceditem)
+							}
+							});
+							counter++
+						});
+					} else if (filters.length && filters[0] === 'descending') {
+						let reserve = [];
+					}
 					let html = '';
-					JSON.parse(data).forEach(product => {
+					data.forEach(product => {
 						html += '<div class="col-md-6 col-lg-4 col-xl-3">';
 						html += '<div id="product-' + product.product_uid + '" class="single-product">'
 						html += '<div class="part-1">'
