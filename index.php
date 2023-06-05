@@ -57,14 +57,6 @@ $db = new Database;
 			load_products(['descending'])
 		})
 
-
-
-
-
-
-
-
-
 		function load_products(filters = []) {
 			$.ajax({
 				type: 'POST',
@@ -111,7 +103,34 @@ $db = new Database;
 							counter++
 						});
 					} else if (filters.length && filters[0] === 'descending') {
-						let reserve = [];
+						let reserve = {},
+							sortable = [],
+							counter = 0;
+						data.forEach(product => {
+							if (product.product_discount) {
+								reserve[product.id] = product.product_price * (100 - product.product_discount) / 100;
+							} else {
+								reserve[product.id] = product.product_price;
+							}
+						});
+						for (var key in reserve) {
+							sortable.push([key, reserve[key]]);
+						}
+						sortable.sort(function (a, b) {
+							return b[1] - a[1];
+						});
+						sortable.forEach(element => {
+							data.forEach(product => {
+								if (element[0] == product.id){
+									const index = data.findIndex(object => {
+										return object.id == element[0];
+									});
+								var spliceditem = data.splice(index, 1)[0]
+								data.splice(counter, 0, spliceditem)
+							}
+							});
+							counter++
+						});
 					}
 					let html = '';
 					data.forEach(product => {
