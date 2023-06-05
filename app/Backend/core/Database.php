@@ -3,11 +3,13 @@
 namespace Nobaan\Backend\Core;
 
 use \PDO;
+use \Redis;
 
 
 class Database
 {
     private $pdo,
+    $redis,
     $query,
     $error = false,
     $results;
@@ -19,9 +21,21 @@ class Database
             $this->pdo = new PDO('mysql:host=localhost;dbname=nobaan_test', 'root', '');
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $this->redis = new Redis();
+            $this->redis->connect('localhost', 6379);
         } catch (\PDOException $e) {
             die($e->getMessage());
         }
+    }
+
+    public function redis_push($value)
+    {
+        $this->redis->lpush('blocked_numbers', $value);
+    }
+
+    public function redis_range()
+    {
+        return $this->redis->lrange('blocked_numbers', 0, 99999);
     }
 
     public function query($sql, array $params)

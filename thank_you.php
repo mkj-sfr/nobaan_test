@@ -1,0 +1,1 @@
+<img src="app/Frontend/assets/images/thank_you.png" alt="thank_you_for_you_product_image">
